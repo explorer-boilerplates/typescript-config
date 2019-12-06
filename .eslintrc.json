@@ -1,8 +1,29 @@
 {
-  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
-  "plugins": ["prettier"],
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended",
+    "prettier/react",
+    "prettier/@typescript-eslint"
+  ],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "prettier/prettier": ["error"]
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      // use <root>/tsconfig.json
+      "typescript": {
+        "alwaysTryTypes": true, // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
+        "directory": "./tsconfig.json"
+      }
+    }
   },
   "env": {
     "browser": true,
@@ -11,6 +32,8 @@
     "node": true
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "ecmaFeatures.jsx": true
   }
 }
