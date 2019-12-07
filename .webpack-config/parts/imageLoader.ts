@@ -17,12 +17,10 @@ export default ({
         test: /\.(png|jpe?g|gif)$/i,
         include,
         exclude,
-        use: [
-          {
-            loader: "url-loader",
-            options
-          }
-        ].concat(use)
+        use: use.concat({
+          loader: "url-loader",
+          options
+        })
       }
     ]
   }

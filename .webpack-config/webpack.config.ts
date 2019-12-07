@@ -5,7 +5,7 @@ import merge from "webpack-merge";
 import glob from "glob";
 
 // Parts
-import extractHTML from "./parts/extractHTMLPlugin";
+import extractHTMLPlugin from "./parts/extractHTMLPlugin";
 import devServer from "./parts/devServer";
 import outputPartial from "./parts/outputPartial";
 import typescriptLoader from "./parts/typescriptLoader";
@@ -15,9 +15,12 @@ import postCSSLoader from "./parts/postCSSLoader";
 import CSSLoader from "./parts/CSSLoader";
 import imageLoader from "./parts/imageLoader";
 import errorOverlayPlugin from "./parts/errorOverlayPlugin";
-import generateSourceMaps from "./parts/generateSourceMaps";
-import extractCSS from "./parts/extractCSS";
+import devtoolPartial from "./parts/devtoolPartial";
+import productionCSSLoader from "./parts/productionCSSLoader";
 import purgeCSSPlugin from "./parts/purgeCSSPlugin";
+import optimizationPartial from "./parts/optimizationPartial";
+import cleanBuildPlugin from "./parts/cleanBuildPlugin";
+import gitRevisionPlugin from "./parts/gitRevisionPlugin";
 
 const PATHS = {
   src: path.join(__dirname, "../src"),
@@ -26,7 +29,7 @@ const PATHS = {
 };
 
 const commonConfig = merge([
-  extractHTML({
+  extractHTMLPlugin({
     template: `${PATHS.src}/template.html`
   }),
   typescriptLoader({ exclude: [/node_modules/] }),
@@ -40,10 +43,46 @@ const commonConfig = merge([
 
 const productionConfig = merge([
   outputPartial({ path: PATHS.dist }),
-  extractCSS({
+  productionCSSLoader({
     use: ["css-loader", postCSSLoader()]
   }),
-  purgeCSSPlugin({ paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }) })
+  purgeCSSPlugin({ paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }) }),
+  imageLoader({
+    options: {
+      limit: 10 * 1024,
+      name: "[name].[ext]"
+    },
+    use: [
+      "file-loader",
+      {
+        loader: "image-webpack-loader",
+        options: {
+          disable: true,
+          mozjpeg: {
+            progressive: true,
+            quality: 65
+          },
+          optipng: {
+            enabled: true
+          },
+          pngquant: {
+            quality: "65-90",
+            speed: 4
+          },
+          gifsicle: {
+            interlaced: false
+          },
+          webp: {
+            quality: 75
+          }
+        }
+      }
+    ]
+  }),
+  devtoolPartial({ type: "source-map" }),
+  optimizationPartial(),
+  cleanBuildPlugin(),
+  gitRevisionPlugin()
 ]);
 
 const developmentConfig = merge([
@@ -53,7 +92,7 @@ const developmentConfig = merge([
   }),
   imageLoader(),
   errorOverlayPlugin(),
-  generateSourceMaps({ type: "cheap-module-source-map" })
+  devtoolPartial({ type: "cheap-module-source-map" })
 ]);
 
 type EnvObject = {
