@@ -7,8 +7,8 @@
   "author": "Progexplorer <progexplorer@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./.config/webpack.config.ts",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack-dev-server --config ./.config/webpack.config.ts --mode development"
+    "build": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./.webpack-config/webpack.config.ts --env.mode production",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" nodemon --watch ./.webpack-config/webpack.config.js --exec \"webpack-dev-server --config ./.webpack-config/webpack.config.ts --env.mode development\""
   },
   "devDependencies": {
     "@types/html-webpack-plugin": "^3.2.1",
@@ -18,7 +18,9 @@
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
     "cross-env": "^6.0.3",
+    "css-loader": "^3.2.1",
     "cz-conventional-changelog": "3.0.2",
+    "error-overlay-webpack-plugin": "^0.4.1",
     "eslint": "6.7.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-config-prettier": "^6.7.0",
@@ -31,14 +33,23 @@
     "html-webpack-plugin": "^3.2.0",
     "husky": ">=3",
     "lint-staged": ">=9",
+    "lodash": "^4.17.15",
+    "mini-css-extract-plugin": "^0.8.0",
+    "nodemon": "^2.0.1",
+    "postcss-loader": "^3.0.0",
     "prettier": "^1.19.1",
+    "purgecss-webpack-plugin": "^1.6.0",
+    "style-loader": "^1.0.1",
+    "svg-url-loader": "^3.0.3",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.5.4",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.3",
+    "url-loader": "^3.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   },
   "config": {
     "commitizen": {
@@ -52,9 +63,13 @@
     }
   },
   "lint-staged": {
-    "*.js": [
-      "eslint . --ext .js,.jsx,.ts,.tsx",
+    "**/*.+(js|jsx|ts|tsx)": [
+      "eslint ./src --ext .js,.jsx,.ts,.tsx",
       "git add"
     ]
+  },
+  "dependencies": {
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "^1.1.4"
   }
 }

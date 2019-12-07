@@ -1,0 +1,15 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+
+@tailwind utilities;
+
+body {
+  background: #f7fafc;
+}
+
+.icon {
+  width: 550px;
+  height: 200px;
+}
